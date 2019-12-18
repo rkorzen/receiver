@@ -26,7 +26,12 @@ datas_schema = DataSchema(many=True)
 
 @app.route("/api/1.0/data", methods=["GET"])
 def get_data():
-    ds = Data.query.all()
+    req = request
+    args = req.args
+    if args:
+        ds = Data.query.filter(Data.environment == args['env']).filter(Data.model == args['model']).all()
+    else:
+        ds = Data.query.all()
     return jsonify(datas_schema.dump(ds))
 
 
